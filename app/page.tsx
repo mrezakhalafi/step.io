@@ -4,7 +4,8 @@ import { useState } from 'react';
 import Modal from './components/Modal';
 import BurgerMenu from './components/BurgerMenu';
 import AddTaskForm from './components/AddTaskForm';
-import AddEventForm from './components/AddEventForm';
+import AddCategoryForm from './components/AddCategoryForm';
+import EditCategoryForm from './components/EditCategoryForm';
 import ClientTimeDisplay from './components/ClientTimeDisplay';
 import ClientCalendarGrid from './components/ClientCalendarGrid';
 import { useAppContext } from './context/AppContext';
@@ -18,10 +19,10 @@ export default function Home() {
     openBurgerMenu,
     closeBurgerMenu,
     tasks,
-    events,
     pinnedTasks,
+    categories,
     deleteTask,
-    deleteEvent
+    getActiveCategoriesCount
   } = useAppContext();
   
   // State to hold the ID of the item being edited
@@ -57,10 +58,6 @@ export default function Home() {
     return date.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' });
   };
 
-  // Get today's events
-  const todaysEvents = events.filter(event => 
-    new Date(event.date).toDateString() === currentDate.toDateString()
-  );
 
   return (
     <div className="min-h-screen bg-gray-100 p-8">
@@ -123,14 +120,16 @@ export default function Home() {
                         {task.icon}
                       </div>
                       <div className="flex-1">
-                        <div className="flex items-center gap-2">
-                          <h4 className="font-semibold text-gray-800">{task.title}</h4>
-                          <span className="text-yellow-500">{task.completed ? '✓' : ''}</span>
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-2">
+                            <h4 className="font-semibold text-gray-800">{task.title}</h4>
+                            <span className="text-yellow-500">{task.completed ? '✓' : ''}</span>
+                          </div>
+                          <span className="inline-block rounded-full bg-yellow-400 px-3 py-1 text-xs font-medium text-gray-900">
+                            {task.category}
+                          </span>
                         </div>
                         <p className="text-sm text-gray-500">{task.date} - {task.time}</p>
-                        <span className="mt-2 inline-block rounded-full bg-yellow-400 px-3 py-1 text-xs font-medium text-white">
-                          {task.category}
-                        </span>
                       </div>
                     </div>
                     <p className="mt-2 text-sm text-gray-600">{task.description}</p>
@@ -181,11 +180,10 @@ export default function Home() {
                 <div className="text-xs font-medium text-gray-400">Sat</div>
                 <div className="text-xs font-medium text-gray-400">Sun</div>
 
-                <ClientCalendarGrid 
-                  currentDate={currentDate} 
-                  tasks={tasks} 
-                  events={events} 
-                  onDateClick={setCurrentDate} 
+                <ClientCalendarGrid
+                  currentDate={currentDate}
+                  tasks={tasks}
+                  onDateClick={setCurrentDate}
                 />
               </div>
             </div>
@@ -215,47 +213,6 @@ export default function Home() {
             </div>
 
             <div className="space-y-3">
-              {/* Render today's events */}
-              {todaysEvents.length > 0 ? (
-                todaysEvents.map((event) => (
-                  <div key={event.id} className="rounded-2xl bg-white p-4 shadow-sm flex items-center">
-                    <span className="text-2xl mr-3">📅</span>
-                    <div className="flex-1">
-                      <div className="font-medium text-gray-800">{event.title}</div>
-                      <div className="text-xs text-gray-500">{event.startTime}{event.endTime && ` - ${event.endTime}`}</div>
-                      <p className="text-sm text-gray-600">
-                        {event.participants} {event.participants === 1 ? 'attendee' : 'attendees'}
-                      </p>
-                    </div>
-                    <div className="flex space-x-2">
-                      <button 
-                        onClick={() => {
-                          setEditingItemId(event.id);
-                          openModal('edit-event', 'Edit Event');
-                        }}
-                        className="text-gray-500 hover:text-yellow-500"
-                      >
-                        ✏️
-                      </button>
-                      <button 
-                        onClick={() => {
-                          if (confirm('Are you sure you want to delete this event?')) {
-                            deleteEvent(event.id);
-                          }
-                        }}
-                        className="text-gray-500 hover:text-red-500"
-                      >
-                        🗑️
-                      </button>
-                    </div>
-                  </div>
-                ))
-              ) : (
-                <div className="text-center py-8 text-gray-500 bg-gray-50 rounded-2xl">
-                  No events scheduled for today
-                </div>
-              )}
-
               {/* Render tasks for today */}
               {tasks
                 .filter(task => new Date(task.date).toDateString() === currentDate.toDateString())
@@ -271,7 +228,7 @@ export default function Home() {
                     <div className="flex items-center space-x-2">
                       <span className="text-sm font-medium text-gray-600 mr-2">{task.time}</span>
                       <div className="flex space-x-2">
-                        <button 
+                        <button
                           onClick={() => {
                             setEditingItemId(task.id);
                             openModal('edit-task', 'Edit Task');
@@ -280,7 +237,7 @@ export default function Home() {
                         >
                           ✏️
                         </button>
-                        <button 
+                        <button
                           onClick={() => {
                             if (confirm('Are you sure you want to delete this task?')) {
                               deleteTask(task.id);
@@ -294,11 +251,25 @@ export default function Home() {
                     </div>
                   </div>
                 ))}
+              {tasks.filter(task => new Date(task.date).toDateString() === currentDate.toDateString()).length === 0 && (
+                <div className="text-center py-8 text-gray-500 bg-gray-50 rounded-2xl">
+                  No tasks scheduled for today
+                </div>
+              )}
             </div>
           </div>
 
           {/* Right Sidebar */}
           <div className="space-y-6">
+            {/* Time & Weather */}
+            <div className="text-center">
+              <ClientTimeDisplay />
+              <div className="flex items-center justify-center gap-2 text-sm text-gray-500">
+                <span>☀️</span>
+                <span>Now is almost Sunny</span>
+              </div>
+            </div>
+
             {/* Music Player */}
             <div className="rounded-2xl bg-gray-50 p-4">
               <div className="mb-4 flex items-center gap-3">
@@ -309,7 +280,7 @@ export default function Home() {
                   <div className="font-semibold text-gray-800">Godzilla</div>
                   <div className="text-sm text-gray-500">Eminem</div>
                 </div>
-                <button 
+                <button
                   className="text-gray-400 cursor-pointer hover:text-gray-600"
                   onClick={() => openModal('settings', 'Music Player Settings')}
                 >
@@ -334,47 +305,60 @@ export default function Home() {
               </div>
             </div>
 
-            {/* Time & Weather */}
-            <div className="text-center">
-              <ClientTimeDisplay />
-              <div className="flex items-center justify-center gap-2 text-sm text-gray-500">
-                <span>☀️</span>
-                <span>Now is almost Sunny</span>
-              </div>
-            </div>
-
-            {/* Promo Card */}
+            {/* Category Management */}
             <div className="rounded-2xl bg-gray-50 p-6">
-              <h3 className="mb-2 text-2xl font-bold leading-tight text-gray-800">
-                Unsleash<br />the freelance<br />super power
-              </h3>
-              <p className="mb-4 text-sm text-gray-600">
-                Unlimited tasks, premium features and much more.
-              </p>
-              <div className="mb-4 flex justify-center">
-                <div className="text-6xl">👨‍💼</div>
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-xl font-bold text-gray-800">Categories</h3>
+                <button
+                  className="text-sm text-yellow-500 hover:underline cursor-pointer"
+                  onClick={() => openModal('add-category', 'Add New Category')}
+                >
+                  Add
+                </button>
               </div>
-              <button 
-                className="flex h-12 w-12 items-center justify-center rounded-full bg-yellow-400 text-gray-800 transition-colors hover:bg-yellow-500 cursor-pointer"
-                onClick={() => openModal('settings', 'Upgrade to Premium')}
-              >
-                →
-              </button>
+              
+              <div className="mb-4">
+                <div className="text-3xl font-bold text-gray-800">{getActiveCategoriesCount()}</div>
+                <div className="text-sm text-gray-600">active categories</div>
+              </div>
+              
+              <div className="space-y-2 max-h-40 overflow-y-auto">
+                {categories.length > 0 ? (
+                  categories.map(category => (
+                    <div 
+                      key={category.id} 
+                      className="flex items-center justify-between p-2 rounded-md hover:bg-gray-100 cursor-pointer"
+                      onClick={() => {
+                        setEditingItemId(category.id);
+                        openModal('edit-category', 'Edit Category');
+                      }}
+                    >
+                      <div className="flex items-center">
+                        <div className={`w-3 h-3 rounded-full ${category.color} mr-2`}></div>
+                        <span className="text-sm text-gray-900">{category.name}</span>
+                      </div>
+                      <span className="text-xs text-gray-500">{category.createdAt}</span>
+                    </div>
+                  ))
+                ) : (
+                  <div className="text-sm text-gray-500 italic p-2">No categories yet</div>
+                )}
+              </div>
             </div>
           </div>
         </div>
       </div>
 
       {/* Modal */}
-      <Modal 
-        isOpen={modalState.isOpen} 
-        onClose={closeModal} 
+      <Modal
+        isOpen={modalState.isOpen}
+        onClose={closeModal}
         title={modalState.title}
       >
         {modalState.type === 'add-task' && <AddTaskForm onClose={closeModal} />}
-        {modalState.type === 'add-event' && <AddEventForm onClose={closeModal} />}
         {modalState.type === 'edit-task' && editingItemId && <EditTaskForm taskId={editingItemId} onClose={closeModal} />}
-        {modalState.type === 'edit-event' && editingItemId && <EditEventForm eventId={editingItemId} onClose={closeModal} />}
+        {modalState.type === 'add-category' && <AddCategoryForm onClose={closeModal} />}
+        {modalState.type === 'edit-category' && editingItemId && <EditCategoryForm categoryId={editingItemId} onClose={closeModal} />}
         {modalState.type === 'settings' && (
           <div>
             <p className="text-gray-600 mb-4">Settings content goes here</p>
@@ -393,12 +377,17 @@ export default function Home() {
               {pinnedTasks.map(task => (
                 <div key={task.id} className="p-3 border rounded-lg flex justify-between items-start">
                   <div>
-                    <div className="font-medium">{task.title}</div>
+                    <div className="flex items-center justify-between">
+                      <div className="font-medium">{task.title}</div>
+                      <span className="inline-block rounded-full bg-yellow-400 px-2 py-1 text-xs font-medium text-gray-900 ml-2">
+                        {task.category}
+                      </span>
+                    </div>
                     <p className="text-sm text-gray-600 mt-1">{task.description}</p>
                     <div className="text-xs text-gray-500 mt-1">{task.date} at {task.time}</div>
                   </div>
                   <div className="flex space-x-2">
-                    <button 
+                    <button
                       onClick={() => {
                         setEditingItemId(task.id);
                         openModal('edit-task', 'Edit Task');
@@ -408,7 +397,7 @@ export default function Home() {
                     >
                       ✏️
                     </button>
-                    <button 
+                    <button
                       onClick={() => {
                         if (confirm('Are you sure you want to delete this pinned task?')) {
                           deleteTask(task.id);

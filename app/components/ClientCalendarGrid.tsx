@@ -5,11 +5,10 @@ import { useState, useEffect } from 'react';
 interface CalendarGridProps {
   currentDate: Date;
   tasks: any[];
-  events: any[];
   onDateClick: (date: Date) => void;
 }
 
-export default function ClientCalendarGrid({ currentDate, tasks, events, onDateClick }: CalendarGridProps) {
+export default function ClientCalendarGrid({ currentDate, tasks, onDateClick }: CalendarGridProps) {
   // Calculate the first day of the month (adjusted for Monday start)
   const firstDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1).getDay();
   const adjustedFirstDay = firstDayOfMonth === 0 ? 6 : firstDayOfMonth - 1;
@@ -31,11 +30,9 @@ export default function ClientCalendarGrid({ currentDate, tasks, events, onDateC
         // Check if this day is the currently selected date
         const isSelected = date.toDateString() === currentDate.toDateString();
         
-        // Check if this day has events
-        const hasEvents = tasks.some(task => 
+        // Check if this day has tasks
+        const hasTasks = tasks.some(task => 
           new Date(task.date).toDateString() === date.toDateString()
-        ) || events.some(event => 
-          new Date(event.date).toDateString() === date.toDateString()
         );
         
         // For "today" indicator, we'll use a static reference date to avoid hydration mismatch
@@ -59,7 +56,7 @@ export default function ClientCalendarGrid({ currentDate, tasks, events, onDateC
                 isSelected 
                   ? 'bg-gray-300 rounded-full w-8 h-8 flex items-center justify-center' 
                   : ''
-              } ${hasEvents ? 'text-yellow-500' : 'text-gray-700'}`}>
+              } ${hasTasks ? 'text-yellow-500' : 'text-gray-700'}`}>
                 {date.getDate()}
               </div>
             )}

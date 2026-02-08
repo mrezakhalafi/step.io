@@ -3,6 +3,13 @@
 import { createContext, useContext, useState, ReactNode, useEffect } from 'react';
 
 // Define types
+type Category = {
+  id: string;
+  name: string;
+  color: string;
+  createdAt: string;
+};
+
 type Task = {
   id: string;
   title: string;
@@ -14,26 +21,16 @@ type Task = {
   icon: string;
 };
 
-type Event = {
-  id: string;
-  title: string;
-  startTime: string;
-  endTime: string;
-  date: string;
-  participants?: number;
-};
-
 type DataState = {
   tasks: Task[];
-  events: Event[];
   pinnedTasks: Task[];
-  calendarEvents: Event[];
+  categories: Category[];
 };
 
 type AppState = DataState & {
   modalState: {
     isOpen: boolean;
-    type: 'add-task' | 'add-event' | 'edit-task' | 'edit-event' | 'settings' | 'view-all' | null;
+    type: 'add-task' | 'edit-task' | 'settings' | 'view-all' | 'add-category' | 'edit-category' | null;
     title: string;
   };
   burgerMenuState: {
@@ -43,19 +40,20 @@ type AppState = DataState & {
 };
 
 type AppContextType = AppState & {
-  openModal: (type: 'add-task' | 'add-event' | 'edit-task' | 'edit-event' | 'settings' | 'view-all', title: string) => void;
+  openModal: (type: 'add-task' | 'edit-task' | 'settings' | 'view-all' | 'add-category' | 'edit-category', title: string) => void;
   closeModal: () => void;
   openBurgerMenu: (type: 'profile' | 'main-menu') => void;
   closeBurgerMenu: () => void;
   addTask: (task: Omit<Task, 'id'>) => void;
   updateTask: (id: string, updates: Partial<Task>) => void;
   deleteTask: (id: string) => void;
-  addEvent: (event: Omit<Event, 'id'>) => void;
-  updateEvent: (id: string, updates: Partial<Event>) => void;
-  deleteEvent: (id: string) => void;
   toggleTaskCompletion: (id: string) => void;
   pinTask: (taskId: string) => void;
   unpinTask: (taskId: string) => void;
+  addCategory: (category: Omit<Category, 'id' | 'createdAt'>) => void;
+  updateCategory: (id: string, updates: Partial<Category>) => void;
+  deleteCategory: (id: string) => void;
+  getActiveCategoriesCount: () => number;
 };
 
 // Create context
@@ -84,24 +82,6 @@ const initialData: DataState = {
       icon: '🎂'
     }
   ],
-  events: [
-    {
-      id: '1',
-      title: 'Shift project kick off pt.1',
-      startTime: '10:00 AM',
-      endTime: '11:30 AM',
-      date: '11 Mar 2020',
-      participants: 6
-    },
-    {
-      id: '2',
-      title: 'Skype Sushi',
-      startTime: '12:30 AM',
-      endTime: '',
-      date: '11 Mar 2020',
-      participants: 2
-    }
-  ],
   pinnedTasks: [
     {
       id: '1',
@@ -114,7 +94,7 @@ const initialData: DataState = {
       icon: '👨‍⚕️'
     }
   ],
-  calendarEvents: []
+  categories: []
 };
 
 // Load data from localStorage
@@ -144,7 +124,9 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const [state, setState] = useState<AppState>(() => {
     const loadedData = loadDataFromStorage();
     return {
-      ...loadedData,
+      tasks: loadedData.tasks || [],
+      pinnedTasks: loadedData.pinnedTasks || [],
+      categories: loadedData.categories || [],
       modalState: {
         isOpen: false,
         type: null,
@@ -161,13 +143,12 @@ export function AppProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     saveDataToStorage({
       tasks: state.tasks,
-      events: state.events,
       pinnedTasks: state.pinnedTasks,
-      calendarEvents: state.calendarEvents
+      categories: state.categories
     });
-  }, [state.tasks, state.events, state.pinnedTasks, state.calendarEvents]);
+  }, [state.tasks, state.pinnedTasks, state.categories]);
 
-  const openModal = (type: 'add-task' | 'add-event' | 'settings' | 'view-all', title: string) => {
+  const openModal = (type: 'add-task' | 'edit-task' | 'settings' | 'view-all' | 'add-category' | 'edit-category', title: string) => {
     setState(prev => ({
       ...prev,
       modalState: {
@@ -238,33 +219,6 @@ export function AppProvider({ children }: { children: ReactNode }) {
     }));
   };
 
-  const addEvent = (event: Omit<Event, 'id'>) => {
-    const newEvent: Event = {
-      ...event,
-      id: Date.now().toString()
-    };
-    
-    setState(prev => ({
-      ...prev,
-      events: [...prev.events, newEvent]
-    }));
-  };
-
-  const updateEvent = (id: string, updates: Partial<Event>) => {
-    setState(prev => ({
-      ...prev,
-      events: prev.events.map(event => 
-        event.id === id ? { ...event, ...updates } : event
-      )
-    }));
-  };
-
-  const deleteEvent = (id: string) => {
-    setState(prev => ({
-      ...prev,
-      events: prev.events.filter(event => event.id !== id)
-    }));
-  };
 
   const toggleTaskCompletion = (id: string) => {
     setState(prev => ({
@@ -292,6 +246,39 @@ export function AppProvider({ children }: { children: ReactNode }) {
     }));
   };
 
+  const addCategory = (category: Omit<Category, 'id' | 'createdAt'>) => {
+    const newCategory: Category = {
+      ...category,
+      id: Date.now().toString(),
+      createdAt: new Date().toISOString().split('T')[0]
+    };
+
+    setState(prev => ({
+      ...prev,
+      categories: [...prev.categories, newCategory]
+    }));
+  };
+
+  const updateCategory = (id: string, updates: Partial<Category>) => {
+    setState(prev => ({
+      ...prev,
+      categories: prev.categories.map(category =>
+        category.id === id ? { ...category, ...updates } : category
+      )
+    }));
+  };
+
+  const deleteCategory = (id: string) => {
+    setState(prev => ({
+      ...prev,
+      categories: prev.categories.filter(category => category.id !== id)
+    }));
+  };
+
+  const getActiveCategoriesCount = () => {
+    return state.categories?.length || 0;
+  };
+
   return (
     <AppContext.Provider value={{
       ...state,
@@ -302,12 +289,13 @@ export function AppProvider({ children }: { children: ReactNode }) {
       addTask,
       updateTask,
       deleteTask,
-      addEvent,
-      updateEvent,
-      deleteEvent,
       toggleTaskCompletion,
       pinTask,
-      unpinTask
+      unpinTask,
+      addCategory,
+      updateCategory,
+      deleteCategory,
+      getActiveCategoriesCount
     }}>
       {children}
     </AppContext.Provider>

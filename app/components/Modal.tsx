@@ -28,22 +28,31 @@ export default function Modal({ isOpen, onClose, title, children }: ModalProps) 
     };
 
     if (isOpen) {
+      // Calculate scrollbar width to compensate for it
+      const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
+      
       document.addEventListener('mousedown', handleClickOutside);
       document.addEventListener('keydown', handleEscapeKey);
-      document.body.style.overflow = 'hidden'; // Prevent scrolling when modal is open
+      
+      // Prevent scrolling and compensate for scrollbar width
+      document.body.style.overflow = 'hidden';
+      document.body.style.paddingRight = `${scrollbarWidth}px`;
     }
 
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
       document.removeEventListener('keydown', handleEscapeKey);
-      document.body.style.overflow = ''; // Re-enable scrolling when modal closes
+      
+      // Restore original body styles
+      document.body.style.overflow = '';
+      document.body.style.paddingRight = '';
     };
   }, [isOpen, onClose]);
 
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black bg-opacity-20">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-transparent">
       <div 
         ref={modalRef}
         className="bg-white rounded-2xl shadow-xl w-full max-w-md transform transition-all"

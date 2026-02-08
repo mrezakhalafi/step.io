@@ -8,14 +8,14 @@ interface AddTaskFormProps {
 }
 
 export default function AddTaskForm({ onClose }: AddTaskFormProps) {
-  const { addTask } = useAppContext();
+  const { addTask, categories } = useAppContext();
   
   const [formData, setFormData] = useState({
     title: '',
     description: '',
     time: '',
     date: '',
-    category: 'personal',
+    category: '',
     icon: '📝'
   });
 
@@ -24,9 +24,10 @@ export default function AddTaskForm({ onClose }: AddTaskFormProps) {
     setFormData(prev => ({
       ...prev,
       time: new Date().toTimeString().substring(0, 5), // Current time in HH:MM format
-      date: new Date().toISOString().split('T')[0] // Current date in YYYY-MM-DD format
+      date: new Date().toISOString().split('T')[0], // Current date in YYYY-MM-DD format
+      category: categories.length > 0 ? categories[0].name : '' // Set default category after categories load
     }));
-  }, []);
+  }, [categories]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -104,10 +105,15 @@ export default function AddTaskForm({ onClose }: AddTaskFormProps) {
           onChange={handleChange}
           className="w-full p-2 border border-gray-300 rounded-md text-gray-900"
         >
-          <option value="personal">Personal</option>
-          <option value="work">Work</option>
-          <option value="health">Health</option>
-          <option value="other">Other</option>
+          {categories.length > 0 ? (
+            categories.map(category => (
+              <option key={category.id} value={category.name}>
+                {category.name}
+              </option>
+            ))
+          ) : (
+            <option value="">No categories available</option>
+          )}
         </select>
       </div>
       

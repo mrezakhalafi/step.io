@@ -17,13 +17,22 @@ export default function BurgerMenu({ isOpen, onClose, children }: BurgerMenuProp
     };
 
     if (isOpen) {
+      // Calculate scrollbar width to compensate for it
+      const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
+      
       document.addEventListener('keydown', handleEscapeKey);
+      
+      // Prevent scrolling and compensate for scrollbar width
       document.body.style.overflow = 'hidden';
+      document.body.style.paddingRight = `${scrollbarWidth}px`;
     }
 
     return () => {
       document.removeEventListener('keydown', handleEscapeKey);
+      
+      // Restore original body styles
       document.body.style.overflow = '';
+      document.body.style.paddingRight = '';
     };
   }, [isOpen, onClose]);
 
@@ -33,7 +42,7 @@ export default function BurgerMenu({ isOpen, onClose, children }: BurgerMenuProp
     <div className="fixed inset-0 z-50 flex">
       {/* Backdrop */}
       <div 
-        className="fixed inset-0 bg-black bg-opacity-20"
+        className="fixed inset-0 bg-transparent"
         onClick={onClose}
       ></div>
       

@@ -119,10 +119,11 @@ export default function EditTaskForm({ taskId, onClose }: EditTaskFormProps) {
             onChange={handleChange}
             className="w-full p-2 border border-gray-300 rounded-md text-gray-900"
           >
-            <option value="personal">Personal</option>
-            <option value="work">Work</option>
-            <option value="health">Health</option>
-            <option value="other">Other</option>
+            {categories.map(category => (
+              <option key={category.id} value={category.name}>
+                {category.name}
+              </option>
+            ))}
           </select>
         </div>
         
