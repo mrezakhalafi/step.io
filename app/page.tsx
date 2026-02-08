@@ -10,6 +10,7 @@ import MusicListModal from './components/MusicListModal';
 import ClientTimeDisplay from './components/ClientTimeDisplay';
 import ClientCalendarGrid from './components/ClientCalendarGrid';
 import { useAppContext } from './context/AppContext';
+import { useLanguage } from './context/LanguageContext';
 
 export default function Home() {
   const {
@@ -26,6 +27,8 @@ export default function Home() {
     getActiveCategoriesCount,
     getCategoryTaskCount
   } = useAppContext();
+  
+  const { t, language, setLanguage } = useLanguage();
   
   // State to hold the ID of the item being edited
   const [editingItemId, setEditingItemId] = useState<string | null>(null);
@@ -62,54 +65,56 @@ export default function Home() {
 
 
   return (
-    <div className="min-h-screen bg-gray-100 p-8">
-      <div className="mx-auto max-w-7xl rounded-3xl bg-white p-8 shadow-sm">
+    <div className="min-h-screen bg-gray-100 p-4 sm:p-8">
+      <div className="mx-auto max-w-7xl rounded-3xl bg-white p-4 sm:p-8 shadow-sm">
         {/* Header */}
-        <div className="mb-8 flex items-center justify-between">
+        <div className="mb-8 flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-2">
             <div className="flex h-10 w-10 items-center justify-center rounded-full bg-yellow-400">
               <span className="text-lg font-bold">📋</span>
             </div>
-            <span className="font-semibold text-gray-800">Step.io</span>
+            <span className="font-semibold text-gray-800">{t('Step.io')}</span>
           </div>
 
           <div className="flex items-center gap-4">
             <button
               className="flex h-10 w-10 items-center justify-center rounded-full bg-yellow-400 text-white cursor-pointer"
-              onClick={() => openModal('add-task', 'Add New Task')}
+              onClick={() => openModal('add-task', t('Add New Task'))}
             >
               +
             </button>
-            <div className="text-right">
-              <div className="font-semibold text-gray-800">M Reza Khalafi</div>
-              <div 
-                className="text-xs text-gray-500 cursor-pointer hover:text-yellow-500"
-                onClick={() => openModal('settings', 'Settings')}
-              >
-                My settings
+            <div className="flex items-center gap-2">
+              <div className="text-right">
+                <div className="font-semibold text-gray-800">M Reza Khalafi</div>
+                <div
+                  className="text-xs text-gray-500 cursor-pointer hover:text-yellow-500"
+                  onClick={() => openModal('settings', t('Settings'))}
+                >
+                  {t('My settings')}
+                </div>
               </div>
-            </div>
-            <div 
-              className="h-10 w-10 overflow-hidden rounded-full bg-gray-300 cursor-pointer"
-              onClick={() => openBurgerMenu('profile')}
-            >
-              <img src="/api/placeholder/40/40" alt="Profile" className="h-full w-full object-cover" />
+              <div
+                className="h-10 w-10 overflow-hidden rounded-full bg-gray-300 cursor-pointer"
+                onClick={() => openBurgerMenu('profile')}
+              >
+                <img src="/api/placeholder/40/40" alt="Profile" className="h-full w-full object-cover" />
+              </div>
             </div>
           </div>
         </div>
 
-        <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
+        <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
           {/* Left Sidebar */}
           <div className="space-y-6">
             {/* Weekly Pinned */}
             <div>
               <div className="mb-4 flex items-center justify-between">
-                <h3 className="font-semibold text-gray-800">Weekly Pinned</h3>
-                <button 
+                <h3 className="font-semibold text-gray-800">{t('Weekly Pinned')}</h3>
+                <button
                   className="text-sm text-yellow-500 cursor-pointer hover:underline"
-                  onClick={() => openModal('view-all', 'All Pinned Tasks')}
+                  onClick={() => openModal('view-all', t('All Pinned Tasks'))}
                 >
-                  View all
+                  {t('View all')}
                 </button>
               </div>
 
@@ -117,21 +122,24 @@ export default function Home() {
                 {/* Render pinned tasks */}
                 {pinnedTasks.map((task) => (
                   <div key={task.id} className="rounded-2xl bg-gray-50 p-4">
-                    <div className="mb-2 flex items-start gap-3">
+                    <div className="mb-2 flex flex-col sm:flex-row items-start gap-3">
                       <div className="flex h-10 w-10 items-center justify-center rounded-full bg-yellow-100">
                         {task.icon}
                       </div>
-                      <div className="flex-1">
-                        <div className="flex items-center justify-between">
-                          <div className="flex items-center gap-2">
-                            <h4 className="font-semibold text-gray-800">{task.title}</h4>
-                            <span className="text-yellow-500">{task.completed ? '✓' : ''}</span>
+                      <div className="flex-1 w-full">
+                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                          <div className="flex flex-col">
+                            <div className="flex items-center gap-2">
+                              <h4 className="font-semibold text-gray-800">{task.title}</h4>
+                              <span className="text-yellow-500">{task.completed ? '✓' : ''}</span>
+                            </div>
+                            <p className="text-sm text-gray-500 sm:hidden">{task.date} - {task.time}</p>
                           </div>
                           <span className="inline-block rounded-full bg-yellow-400 px-3 py-1 text-xs font-medium text-gray-900">
                             {task.category}
                           </span>
                         </div>
-                        <p className="text-sm text-gray-500">{task.date} - {task.time}</p>
+                        <p className="text-sm text-gray-500 hidden sm:block">{task.date} - {task.time}</p>
                       </div>
                     </div>
                     <p className="mt-2 text-sm text-gray-600">{task.description}</p>
@@ -139,33 +147,33 @@ export default function Home() {
                 ))}
 
                 {/* Add New Pin */}
-                <div 
+                <div
                   className="flex items-center gap-3 rounded-2xl bg-gray-50 p-4 cursor-pointer hover:bg-gray-100"
-                  onClick={() => openModal('add-task', 'Add New Weekly Pin')}
+                  onClick={() => openModal('add-task', t('Add new weekly pin'))}
                 >
                   <div className="flex h-10 w-10 items-center justify-center rounded-full bg-yellow-400 text-white">
                     +
                   </div>
-                  <h4 className="font-semibold text-gray-800">Add new weekly pin</h4>
+                  <h4 className="font-semibold text-gray-800">{t('Add new weekly pin')}</h4>
                 </div>
               </div>
             </div>
 
             {/* Calendar */}
             <div>
-              <div className="mb-4 flex items-center justify-between">
-                <h3 className="font-semibold text-gray-800">
+              <div className="mb-4 flex flex-col sm:flex-row items-center justify-between gap-2">
+                <h3 className="font-semibold text-gray-800 text-center sm:text-left">
                   {currentDate.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
                 </h3>
                 <div className="flex items-center gap-2">
-                  <button 
-                    className="text-gray-400 cursor-pointer hover:text-gray-600"
+                  <button
+                    className="text-gray-400 cursor-pointer hover:text-gray-600 bg-gray-100 rounded-full w-8 h-8 flex items-center justify-center"
                     onClick={() => navigateCalendar('prev')}
                   >
                     ←
                   </button>
-                  <button 
-                    className="text-gray-400 cursor-pointer hover:text-gray-600"
+                  <button
+                    className="text-gray-400 cursor-pointer hover:text-gray-600 bg-gray-100 rounded-full w-8 h-8 flex items-center justify-center"
                     onClick={() => navigateCalendar('next')}
                   >
                     →
@@ -173,7 +181,7 @@ export default function Home() {
                 </div>
               </div>
 
-              <div className="mt-4 grid grid-cols-7 gap-2 text-center">
+              <div className="mt-4 grid grid-cols-7 gap-1 sm:gap-2 text-center">
                 <div className="text-xs font-medium text-gray-400">Mon</div>
                 <div className="text-xs font-medium text-gray-400">Tue</div>
                 <div className="text-xs font-medium text-gray-400">Wed</div>
@@ -194,12 +202,12 @@ export default function Home() {
           {/* Center - Today's Schedule */}
           <div>
             <div className="mb-6">
-              <h2 className="text-3xl font-bold text-gray-800">Today's schedule</h2>
-              <div className="flex items-center justify-between">
-                <h3 className="text-2xl font-semibold text-yellow-400">
+              <h2 className="text-3xl font-bold text-gray-800">{t('Today\'s schedule')}</h2>
+              <div className="flex items-center justify-between w-full">
+                <h3 className="text-xl sm:text-2xl font-semibold text-yellow-400 truncate">
                   {formatDate(currentDate)}
                 </h3>
-                <div className="flex gap-2">
+                <div className="flex gap-2 ml-2">
                   <button
                     className="text-gray-400 cursor-pointer hover:text-gray-600 bg-gray-100 rounded-full w-8 h-8 flex items-center justify-center"
                     onClick={() => navigateDay('prev')}
@@ -221,21 +229,21 @@ export default function Home() {
               {tasks
                 .filter(task => new Date(task.date).toDateString() === currentDate.toDateString())
                 .map((task) => (
-                  <div key={task.id} className="rounded-2xl bg-white p-4 shadow-sm flex items-center">
-                    <span className="text-2xl mr-3">{task.icon}</span>
-                    <div className="flex-1">
+                  <div key={task.id} className="rounded-2xl bg-white p-4 shadow-sm flex flex-col sm:flex-row items-start sm:items-center gap-3">
+                    <span className="text-2xl">{task.icon}</span>
+                    <div className="flex-1 w-full">
                       <div className="font-medium text-gray-800">{task.title}</div>
                       {task.description && (
                         <p className="text-sm text-gray-600">{task.description}</p>
                       )}
                     </div>
-                    <div className="flex items-center space-x-2">
-                      <span className="text-sm font-medium text-gray-600 mr-2">{task.time}</span>
+                    <div className="flex items-center justify-between sm:justify-end w-full sm:w-auto gap-2">
+                      <span className="text-sm font-medium text-gray-600">{task.time}</span>
                       <div className="flex space-x-2">
                         <button
                           onClick={() => {
                             setEditingItemId(task.id);
-                            openModal('edit-task', 'Edit Task');
+                            openModal('edit-task', t('Edit Task'));
                           }}
                           className="text-gray-500 hover:text-yellow-500 cursor-pointer"
                         >
@@ -243,7 +251,7 @@ export default function Home() {
                         </button>
                         <button
                           onClick={() => {
-                            if (confirm('Are you sure you want to delete this task?')) {
+                            if (confirm(t('Are you sure you want to delete this task?'))) {
                               deleteTask(task.id);
                             }
                           }}
@@ -257,7 +265,7 @@ export default function Home() {
                 ))}
               {tasks.filter(task => new Date(task.date).toDateString() === currentDate.toDateString()).length === 0 && (
                 <div className="text-center py-8 text-gray-500 bg-gray-50 rounded-2xl">
-                  No tasks scheduled for today
+                  {t('No tasks scheduled for today')}
                 </div>
               )}
             </div>
@@ -270,7 +278,7 @@ export default function Home() {
               <ClientTimeDisplay />
               <div className="flex items-center justify-center gap-2 text-sm text-gray-500">
                 <span>☀️</span>
-                <span>Now is almost Sunny</span>
+                <span>{t('Now is almost Sunny')}</span>
               </div>
             </div>
 
@@ -280,13 +288,13 @@ export default function Home() {
                 <div className="h-12 w-12 overflow-hidden rounded-lg bg-red-900">
                   <img src="/api/placeholder/48/48" alt="Album" className="h-full w-full object-cover" />
                 </div>
-                <div className="flex-1">
-                  <div className="font-semibold text-gray-800">Godzilla</div>
-                  <div className="text-sm text-gray-500">Eminem</div>
+                <div className="flex-1 min-w-0">
+                  <div className="font-semibold text-gray-800 truncate">{t('Godzilla')}</div>
+                  <div className="text-sm text-gray-500 truncate">{t('Eminem')}</div>
                 </div>
                 <button
                   className="text-gray-400 cursor-pointer hover:text-gray-600"
-                  onClick={() => openModal('settings', 'Music Player Settings')}
+                  onClick={() => openModal('settings', t('Music Player Settings'))}
                 >
                   ⋮
                 </button>
@@ -300,7 +308,7 @@ export default function Home() {
                 <span>00:45</span>
               </div>
 
-              <div className="flex items-center justify-center gap-4">
+              <div className="flex items-center justify-center gap-2 sm:gap-4">
                 <button className="text-gray-600 cursor-pointer hover:text-gray-800">🔀</button>
                 <button className="text-gray-600 cursor-pointer hover:text-gray-800">⏮</button>
                 <button className="flex h-8 w-8 items-center justify-center rounded-full bg-yellow-400 text-white cursor-pointer hover:bg-yellow-600">▶</button>
@@ -312,22 +320,22 @@ export default function Home() {
             {/* Change Music Button */}
             <div className="flex justify-center">
               <button
-                className="px-4 py-2 bg-yellow-400 text-gray-800 rounded-full text-sm font-medium hover:bg-yellow-500 cursor-pointer"
-                onClick={() => openModal('music-list', 'Change Music')}
+                className="px-4 py-2 bg-yellow-400 text-gray-800 rounded-full text-sm font-medium hover:bg-yellow-500 cursor-pointer w-full sm:w-auto"
+                onClick={() => openModal('music-list', t('Change Music Modal Title'))}
               >
-                Change Music
+                {t('Change Music')}
               </button>
             </div>
 
             {/* Category Management */}
-            <div className="rounded-2xl bg-gray-50 p-6">
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="text-xl font-bold text-gray-800">Categories</h3>
+            <div className="rounded-2xl bg-gray-50 p-4 sm:p-6">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-4 gap-2">
+                <h3 className="text-lg sm:text-xl font-bold text-gray-800">{t('Categories')}</h3>
                 <button
-                  className="text-sm text-yellow-500 hover:underline cursor-pointer"
-                  onClick={() => openModal('add-category', 'Add New Category')}
+                  className="text-sm text-yellow-500 hover:underline cursor-pointer self-end"
+                  onClick={() => openModal('add-category', t('Add New Category'))}
                 >
-                  Add
+                  {t('Add')}
                 </button>
               </div>
               
@@ -339,7 +347,7 @@ export default function Home() {
                       className="flex items-center justify-between p-2 rounded-md hover:bg-gray-100 cursor-pointer"
                       onClick={() => {
                         setEditingItemId(category.id);
-                        openModal('edit-category', 'Edit Category');
+                        openModal('edit-category', t('Edit Category'));
                       }}
                     >
                       <div className="flex items-center">
@@ -352,7 +360,7 @@ export default function Home() {
                     </div>
                   ))
                 ) : (
-                  <div className="text-sm text-gray-500 italic p-2">No categories yet</div>
+                  <div className="text-sm text-gray-500 italic p-2">{t('No categories yet')}</div>
                 )}
               </div>
             </div>
@@ -453,39 +461,64 @@ export default function Home() {
             <button
               className="w-full text-left p-2 hover:bg-gray-100 rounded text-gray-800 cursor-pointer"
               onClick={() => {
-                openModal('settings', 'Account Settings');
+                openModal('settings', t('Account Settings'));
                 closeBurgerMenu();
               }}
             >
-              Account Settings
+              {t('Account Settings')}
             </button>
             <button
               className="w-full text-left p-2 hover:bg-gray-100 rounded text-gray-800 cursor-pointer"
               onClick={() => {
-                openModal('settings', 'Notifications');
+                openModal('settings', t('Notifications'));
                 closeBurgerMenu();
               }}
             >
-              Notifications
+              {t('Notifications')}
             </button>
             <button
               className="w-full text-left p-2 hover:bg-gray-100 rounded text-gray-800 cursor-pointer"
               onClick={() => {
-                openModal('settings', 'Privacy');
+                openModal('settings', t('Privacy'));
                 closeBurgerMenu();
               }}
             >
-              Privacy
+              {t('Privacy')}
             </button>
             <button
               className="w-full text-left p-2 hover:bg-gray-100 rounded text-gray-800 cursor-pointer"
               onClick={() => {
-                openModal('settings', 'Help & Support');
+                openModal('settings', t('Help & Support'));
                 closeBurgerMenu();
               }}
             >
-              Help & Support
+              {t('Help & Support')}
             </button>
+            <div className="pt-4 border-t border-gray-200">
+              <div className="text-sm font-medium text-gray-700 mb-2">{t('Language')}</div>
+              <div className="flex space-x-2">
+                <button
+                  className={`flex-1 py-2 px-3 rounded-md text-sm ${
+                    language === 'en' 
+                      ? 'bg-yellow-400 text-white' 
+                      : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                  }`}
+                  onClick={() => setLanguage('en')}
+                >
+                  {t('English')}
+                </button>
+                <button
+                  className={`flex-1 py-2 px-3 rounded-md text-sm ${
+                    language === 'id' 
+                      ? 'bg-yellow-400 text-white' 
+                      : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                  }`}
+                  onClick={() => setLanguage('id')}
+                >
+                  {t('Indonesian')}
+                </button>
+              </div>
+            </div>
             <button
               className="w-full text-left p-2 hover:bg-gray-100 rounded text-red-600 cursor-pointer"
               onClick={() => {
@@ -493,7 +526,7 @@ export default function Home() {
                 closeBurgerMenu();
               }}
             >
-              Logout
+              {t('Logout')}
             </button>
           </nav>
         </div>
