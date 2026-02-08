@@ -30,7 +30,7 @@ type DataState = {
 type AppState = DataState & {
   modalState: {
     isOpen: boolean;
-    type: 'add-task' | 'edit-task' | 'settings' | 'view-all' | 'add-category' | 'edit-category' | null;
+    type: 'add-task' | 'edit-task' | 'settings' | 'view-all' | 'add-category' | 'edit-category' | 'music-list' | null;
     title: string;
   };
   burgerMenuState: {
@@ -124,9 +124,9 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const [state, setState] = useState<AppState>(() => {
     const loadedData = loadDataFromStorage();
     return {
-      tasks: loadedData.tasks || [],
-      pinnedTasks: loadedData.pinnedTasks || [],
-      categories: loadedData.categories || [],
+      tasks: loadedData.tasks || initialData.tasks || [],
+      pinnedTasks: loadedData.pinnedTasks || initialData.pinnedTasks || [],
+      categories: loadedData.categories || initialData.categories || [],
       modalState: {
         isOpen: false,
         type: null,
@@ -148,7 +148,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
     });
   }, [state.tasks, state.pinnedTasks, state.categories]);
 
-  const openModal = (type: 'add-task' | 'edit-task' | 'settings' | 'view-all' | 'add-category' | 'edit-category', title: string) => {
+  const openModal = (type: 'add-task' | 'edit-task' | 'settings' | 'view-all' | 'add-category' | 'edit-category' | 'music-list', title: string) => {
     setState(prev => ({
       ...prev,
       modalState: {
@@ -279,6 +279,13 @@ export function AppProvider({ children }: { children: ReactNode }) {
     return state.categories?.length || 0;
   };
 
+  const getCategoryTaskCount = (categoryId: string) => {
+    if (!state.categories || !state.tasks) return 0;
+    const category = state.categories.find(cat => cat.id === categoryId);
+    if (!category) return 0; // Return 0 if category doesn't exist
+    return state.tasks.filter(task => task.category === category.name).length;
+  };
+
   return (
     <AppContext.Provider value={{
       ...state,
@@ -295,7 +302,8 @@ export function AppProvider({ children }: { children: ReactNode }) {
       addCategory,
       updateCategory,
       deleteCategory,
-      getActiveCategoriesCount
+      getActiveCategoriesCount,
+      getCategoryTaskCount
     }}>
       {children}
     </AppContext.Provider>

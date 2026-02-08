@@ -42,13 +42,13 @@ export default function BurgerMenu({ isOpen, onClose, children }: BurgerMenuProp
     <div className="fixed inset-0 z-50 flex">
       {/* Backdrop */}
       <div 
-        className="fixed inset-0 bg-transparent"
+        className="fixed inset-0 bg-black bg-opacity-20"
         onClick={onClose}
       ></div>
       
       {/* Slide-in menu */}
       <div 
-        className={`relative ml-auto h-full w-64 bg-white shadow-xl transform transition-transform duration-300 ease-in-out ${
+        className={`relative ml-auto h-full w-75 bg-white shadow-xl transform transition-transform duration-300 ease-in-out ${
           isOpen ? 'translate-x-0' : 'translate-x-full'
         }`}
       >

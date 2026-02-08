@@ -66,7 +66,7 @@ export default function AddCategoryForm({ onClose }: AddCategoryFormProps) {
               onClick={() => setFormData({...formData, color: color.value})}
             >
               <div className={`w-4 h-4 rounded-full ${color.class} mr-2`}></div>
-              <span className="text-xs">{color.name}</span>
+              <span className="text-xs text-gray-900">{color.name}</span>
             </div>
           ))}
         </div>

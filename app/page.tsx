@@ -6,6 +6,7 @@ import BurgerMenu from './components/BurgerMenu';
 import AddTaskForm from './components/AddTaskForm';
 import AddCategoryForm from './components/AddCategoryForm';
 import EditCategoryForm from './components/EditCategoryForm';
+import MusicListModal from './components/MusicListModal';
 import ClientTimeDisplay from './components/ClientTimeDisplay';
 import ClientCalendarGrid from './components/ClientCalendarGrid';
 import { useAppContext } from './context/AppContext';
@@ -22,7 +23,8 @@ export default function Home() {
     pinnedTasks,
     categories,
     deleteTask,
-    getActiveCategoriesCount
+    getActiveCategoriesCount,
+    getCategoryTaskCount
   } = useAppContext();
   
   // State to hold the ID of the item being edited
@@ -193,22 +195,24 @@ export default function Home() {
           <div>
             <div className="mb-6">
               <h2 className="text-3xl font-bold text-gray-800">Today's schedule</h2>
-              <div className="flex items-center gap-2">
+              <div className="flex items-center justify-between">
                 <h3 className="text-2xl font-semibold text-yellow-400">
                   {formatDate(currentDate)}
                 </h3>
-                <button 
-                  className="text-gray-400 cursor-pointer hover:text-gray-600"
-                  onClick={() => navigateDay('prev')}
-                >
-                  ←
-                </button>
-                <button 
-                  className="text-gray-400 cursor-pointer hover:text-gray-600"
-                  onClick={() => navigateDay('next')}
-                >
-                  →
-                </button>
+                <div className="flex gap-2">
+                  <button
+                    className="text-gray-400 cursor-pointer hover:text-gray-600 bg-gray-100 rounded-full w-8 h-8 flex items-center justify-center"
+                    onClick={() => navigateDay('prev')}
+                  >
+                    ←
+                  </button>
+                  <button
+                    className="text-gray-400 cursor-pointer hover:text-gray-600 bg-gray-100 rounded-full w-8 h-8 flex items-center justify-center"
+                    onClick={() => navigateDay('next')}
+                  >
+                    →
+                  </button>
+                </div>
               </div>
             </div>
 
@@ -233,7 +237,7 @@ export default function Home() {
                             setEditingItemId(task.id);
                             openModal('edit-task', 'Edit Task');
                           }}
-                          className="text-gray-500 hover:text-yellow-500"
+                          className="text-gray-500 hover:text-yellow-500 cursor-pointer"
                         >
                           ✏️
                         </button>
@@ -243,7 +247,7 @@ export default function Home() {
                               deleteTask(task.id);
                             }
                           }}
-                          className="text-gray-500 hover:text-red-500"
+                          className="text-gray-500 hover:text-red-500 cursor-pointer"
                         >
                           🗑️
                         </button>
@@ -305,6 +309,16 @@ export default function Home() {
               </div>
             </div>
 
+            {/* Change Music Button */}
+            <div className="flex justify-center">
+              <button
+                className="px-4 py-2 bg-yellow-400 text-gray-800 rounded-full text-sm font-medium hover:bg-yellow-500 cursor-pointer"
+                onClick={() => openModal('music-list', 'Change Music')}
+              >
+                Change Music
+              </button>
+            </div>
+
             {/* Category Management */}
             <div className="rounded-2xl bg-gray-50 p-6">
               <div className="flex items-center justify-between mb-4">
@@ -315,11 +329,6 @@ export default function Home() {
                 >
                   Add
                 </button>
-              </div>
-              
-              <div className="mb-4">
-                <div className="text-3xl font-bold text-gray-800">{getActiveCategoriesCount()}</div>
-                <div className="text-sm text-gray-600">active categories</div>
               </div>
               
               <div className="space-y-2 max-h-40 overflow-y-auto">
@@ -337,7 +346,9 @@ export default function Home() {
                         <div className={`w-3 h-3 rounded-full ${category.color} mr-2`}></div>
                         <span className="text-sm text-gray-900">{category.name}</span>
                       </div>
-                      <span className="text-xs text-gray-500">{category.createdAt}</span>
+                      <span className="text-xs text-gray-500 bg-gray-200 rounded-full px-2 py-1">
+                        {getCategoryTaskCount(category.id)}
+                      </span>
                     </div>
                   ))
                 ) : (
@@ -359,6 +370,7 @@ export default function Home() {
         {modalState.type === 'edit-task' && editingItemId && <EditTaskForm taskId={editingItemId} onClose={closeModal} />}
         {modalState.type === 'add-category' && <AddCategoryForm onClose={closeModal} />}
         {modalState.type === 'edit-category' && editingItemId && <EditCategoryForm categoryId={editingItemId} onClose={closeModal} />}
+        {modalState.type === 'music-list' && <MusicListModal onClose={closeModal} />}
         {modalState.type === 'settings' && (
           <div>
             <p className="text-gray-600 mb-4">Settings content goes here</p>
@@ -372,13 +384,12 @@ export default function Home() {
         )}
         {modalState.type === 'view-all' && (
           <div>
-            <h3 className="font-semibold text-lg mb-4">All Pinned Tasks</h3>
             <div className="space-y-3 max-h-96 overflow-y-auto">
               {pinnedTasks.map(task => (
                 <div key={task.id} className="p-3 border rounded-lg flex justify-between items-start">
                   <div>
                     <div className="flex items-center justify-between">
-                      <div className="font-medium">{task.title}</div>
+                      <div className="font-medium text-gray-900">{task.title}</div>
                       <span className="inline-block rounded-full bg-yellow-400 px-2 py-1 text-xs font-medium text-gray-900 ml-2">
                         {task.category}
                       </span>
@@ -428,11 +439,11 @@ export default function Home() {
         onClose={closeBurgerMenu}
       >
         <div className="space-y-4">
-          <div className="flex items-center gap-3 pb-4 border-b">
-            <div className="h-12 w-12 overflow-hidden rounded-full bg-gray-300">
+          <div className="flex items-center gap-4 pb-4 border-b">
+            <div className="h-16 w-16 overflow-hidden rounded-full bg-gray-300">
               <img src="/api/placeholder/48/48" alt="Profile" className="h-full w-full object-cover" />
             </div>
-            <div>
+            <div className="flex-1">
               <div className="font-semibold text-gray-800">M Reza Khalafi</div>
               <div className="text-sm text-gray-600">mrezakhalafi@gmail.com</div>
             </div>

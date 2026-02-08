@@ -8,7 +8,10 @@ export default function ClientTimeDisplay() {
   useEffect(() => {
     // Update time immediately and then every minute
     const updateTime = () => {
-      setCurrentTime(new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }));
+      const now = new Date();
+      const hours = String(now.getHours()).padStart(2, '0');
+      const minutes = String(now.getMinutes()).padStart(2, '0');
+      setCurrentTime(`${hours}:${minutes}`);
     };
 
     updateTime(); // Set initial time
