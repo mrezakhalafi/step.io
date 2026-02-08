@@ -9,7 +9,8 @@ interface EditTaskFormProps {
 }
 
 export default function EditTaskForm({ taskId, onClose }: EditTaskFormProps) {
-  const { tasks, updateTask } = useAppContext();
+  const { tasks, updateTask, categories } = useAppContext();
+  
   const task = tasks.find(t => t.id === taskId);
   
   const [formData, setFormData] = useState({

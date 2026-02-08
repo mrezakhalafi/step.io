@@ -97,26 +97,40 @@ export default function AddTaskForm({ onClose }: AddTaskFormProps) {
         </div>
       </div>
       
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">Category</label>
-        <select
-          name="category"
-          value={formData.category}
-          onChange={handleChange}
-          className="w-full p-2 border border-gray-300 rounded-md text-gray-900"
-        >
-          {categories.length > 0 ? (
-            categories.map(category => (
-              <option key={category.id} value={category.name}>
-                {category.name}
-              </option>
-            ))
-          ) : (
-            <option value="">No categories available</option>
-          )}
-        </select>
+      <div className="grid grid-cols-2 gap-4">
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Category</label>
+          <select
+            name="category"
+            value={formData.category}
+            onChange={handleChange}
+            className="w-full p-2 border border-gray-300 rounded-md text-gray-900"
+          >
+            {categories.length > 0 ? (
+              categories.map(category => (
+                <option key={category.id} value={category.name}>
+                  {category.name}
+                </option>
+              ))
+            ) : (
+              <option value="">No categories available</option>
+            )}
+          </select>
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Icon</label>
+          <input
+            type="text"
+            name="icon"
+            value={formData.icon}
+            onChange={handleChange}
+            className="w-full p-2 border border-gray-300 rounded-md text-gray-900"
+            placeholder="e.g., 📝, 🏋️, 👨‍💼"
+          />
+        </div>
       </div>
-      
+
       <div className="flex justify-end space-x-3 pt-4">
         <button
           type="button"

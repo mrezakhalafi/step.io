@@ -40,7 +40,7 @@ type AppState = DataState & {
 };
 
 type AppContextType = AppState & {
-  openModal: (type: 'add-task' | 'edit-task' | 'settings' | 'view-all' | 'add-category' | 'edit-category', title: string) => void;
+  openModal: (type: 'add-task' | 'edit-task' | 'settings' | 'view-all' | 'add-category' | 'edit-category' | 'music-list', title: string) => void;
   closeModal: () => void;
   openBurgerMenu: (type: 'profile' | 'main-menu') => void;
   closeBurgerMenu: () => void;
@@ -54,6 +54,7 @@ type AppContextType = AppState & {
   updateCategory: (id: string, updates: Partial<Category>) => void;
   deleteCategory: (id: string) => void;
   getActiveCategoriesCount: () => number;
+  getCategoryTaskCount: (categoryId: string) => number;
 };
 
 // Create context

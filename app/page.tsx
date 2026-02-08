@@ -4,6 +4,7 @@ import { useState } from 'react';
 import Modal from './components/Modal';
 import BurgerMenu from './components/BurgerMenu';
 import AddTaskForm from './components/AddTaskForm';
+import EditTaskForm from './components/EditTaskForm';
 import AddCategoryForm from './components/AddCategoryForm';
 import EditCategoryForm from './components/EditCategoryForm';
 import MusicListModal from './components/MusicListModal';

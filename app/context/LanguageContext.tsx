@@ -31,7 +31,6 @@ const translations = {
     'Now is almost Sunny': 'Now is almost Sunny',
     
     // Modals
-    'Add New Task': 'Add New Task',
     'Task Title': 'Task Title',
     'Description': 'Description',
     'Time': 'Time',
@@ -107,7 +106,6 @@ const translations = {
     'Now is almost Sunny': 'Cuaca hampir cerah',
     
     // Modals
-    'Add New Task': 'Tambah Tugas Baru',
     'Task Title': 'Judul Tugas',
     'Description': 'Deskripsi',
     'Time': 'Waktu',
@@ -184,7 +182,7 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
   }, [language]);
 
   const t = (key: string): string => {
-    const translation = translations[language][key];
+    const translation = translations?[language][key as any]:key;
     return translation || key; // Return the key itself if no translation is found
   };
 
