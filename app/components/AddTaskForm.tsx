@@ -5,9 +5,10 @@ import { useAppContext } from '../context/AppContext';
 
 interface AddTaskFormProps {
   onClose: () => void;
+  defaultDate?: string;
 }
 
-export default function AddTaskForm({ onClose }: AddTaskFormProps) {
+export default function AddTaskForm({ onClose, defaultDate }: AddTaskFormProps) {
   const { addTask, categories } = useAppContext();
   
   const [formData, setFormData] = useState({
@@ -24,10 +25,10 @@ export default function AddTaskForm({ onClose }: AddTaskFormProps) {
     setFormData(prev => ({
       ...prev,
       time: new Date().toTimeString().substring(0, 5), // Current time in HH:MM format
-      date: new Date().toISOString().split('T')[0], // Current date in YYYY-MM-DD format
+      date: defaultDate || new Date().toLocaleDateString('en-CA'), // Use default date if provided, otherwise current date
       category: categories.length > 0 ? categories[0].name : '' // Set default category after categories load
     }));
-  }, [categories]);
+  }, [categories, defaultDate]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;

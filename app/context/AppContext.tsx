@@ -62,39 +62,8 @@ const AppContext = createContext<AppContextType | undefined>(undefined);
 
 // Initial data
 const initialData: DataState = {
-  tasks: [
-    {
-      id: '1',
-      title: 'Call doctor for tests',
-      description: 'Ask for blood tests and GYM certificate.',
-      time: '9:00 AM',
-      date: '15 Mar 2020',
-      category: 'personal',
-      completed: true,
-      icon: '👨‍⚕️'
-    },
-    {
-      id: '2',
-      title: 'Beatrice\'s bday',
-      time: '',
-      date: '22 Mar 2020',
-      category: 'personal',
-      completed: false,
-      icon: '🎂'
-    }
-  ],
-  pinnedTasks: [
-    {
-      id: '1',
-      title: 'Call doctor for tests',
-      description: 'Ask for blood tests and GYM certificate.',
-      time: '9:00 AM',
-      date: '15 Mar 2020',
-      category: 'personal',
-      completed: true,
-      icon: '👨‍⚕️'
-    }
-  ],
+  tasks: [],
+  pinnedTasks: [],
   categories: []
 };
 

@@ -6,9 +6,10 @@ interface CalendarGridProps {
   currentDate: Date;
   tasks: any[];
   onDateClick: (date: Date) => void;
+  onDateDoubleClick?: (date: Date) => void;
 }
 
-export default function ClientCalendarGrid({ currentDate, tasks, onDateClick }: CalendarGridProps) {
+export default function ClientCalendarGrid({ currentDate, tasks, onDateClick, onDateDoubleClick }: CalendarGridProps) {
   // Calculate the first day of the month (adjusted for Monday start)
   const firstDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1).getDay();
   const adjustedFirstDay = firstDayOfMonth === 0 ? 6 : firstDayOfMonth - 1;
@@ -35,31 +36,24 @@ export default function ClientCalendarGrid({ currentDate, tasks, onDateClick }: 
           new Date(task.date).toDateString() === date.toDateString()
         );
         
-        // For "today" indicator, we'll use a static reference date to avoid hydration mismatch
-        // We'll highlight Feb 11, 2026 as "today" as per the initial setup
-        const isToday = date.toDateString() === new Date(2026, 1, 11).toDateString(); // Feb 11, 2026
-        
+        // For "today" indicator, we'll use a fixed reference date (Feb 9, 2026) as the actual "today"
+        const actualToday = new Date(2026, 1, 9); // February 9, 2026
+        const isToday = date.toDateString() === actualToday.toDateString();
+
         return (
-          <div 
-            key={index} 
+          <div
+            key={index}
             className="py-2 text-sm cursor-pointer hover:bg-gray-100 rounded-full flex items-center justify-center"
             onClick={() => onDateClick(date)}
+            onDoubleClick={() => onDateDoubleClick && onDateDoubleClick(date)}
           >
-            {isToday ? (
-              <div className={`flex h-8 w-8 items-center justify-center rounded-full text-sm font-semibold text-white mx-auto ${
-                isSelected ? 'bg-gray-500' : 'bg-yellow-400'
-              }`}>
-                {date.getDate()}
-              </div>
-            ) : (
-              <div className={`${
-                isSelected 
-                  ? 'bg-gray-300 rounded-full w-8 h-8 flex items-center justify-center' 
-                  : ''
-              } ${hasTasks ? 'text-yellow-500' : 'text-gray-700'}`}>
-                {date.getDate()}
-              </div>
-            )}
+            <div className={`flex h-8 w-8 items-center justify-center rounded-full text-sm font-semibold ${
+              isToday && !isSelected ? 'text-white bg-yellow-400' : 
+              isSelected ? 'text-white bg-gray-500' : 
+              hasTasks ? 'text-yellow-500' : 'text-gray-700'
+            }`}>
+              {date.getDate()}
+            </div>
           </div>
         );
       })}

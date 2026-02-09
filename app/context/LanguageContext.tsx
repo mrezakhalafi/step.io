@@ -160,6 +160,9 @@ const translations = {
     'Language': 'Bahasa',
     'English': 'Inggris',
     'Indonesian': 'Indonesia',
+    'Select Task to Pin': 'Pilih Tugas untuk Disematkan',
+    'No tasks available to pin': 'Tidak ada tugas yang tersedia untuk disematkan',
+    'Select music': 'Pilih musik',
   }
 };
 
@@ -182,8 +185,8 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
   }, [language]);
 
   const t = (key: string): string => {
-    const translation = translations?[language][key as any]:key;
-    return translation || key; // Return the key itself if no translation is found
+    const translation = (translations[language] as Record<string, string>)[key];
+    return translation ?? key; // Return the key itself if no translation is found
   };
 
   return (
