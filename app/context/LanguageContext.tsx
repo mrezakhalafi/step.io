@@ -59,7 +59,7 @@ const translations = {
     'Add Category': 'Add Category',
     'Edit Category': 'Edit Category',
     'Update Category': 'Update Category',
-    'No categories yet': 'No categories yet',
+    'No categories': 'No categories',
     'active categories': 'active categories',
     
     // Music
@@ -134,7 +134,7 @@ const translations = {
     'Add Category': 'Tambah Kategori',
     'Edit Category': 'Edit Kategori',
     'Update Category': 'Perbarui Kategori',
-    'No categories yet': 'Belum ada kategori',
+    'No categories': 'Belum ada kategori',
     'active categories': 'kategori aktif',
     
     // Music

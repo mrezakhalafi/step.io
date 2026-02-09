@@ -77,35 +77,37 @@ export default function Home() {
         <div className="mx-auto max-w-7xl rounded-3xl bg-white p-4 sm:p-8 lg:p-10 xl:p-12 shadow-sm">
           {/* Header */}
           <div className="mb-8 flex flex-col sm:flex-row items-center justify-between gap-4">
-            <div className="flex items-center gap-2">
-              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-yellow-400">
-                <span className="text-lg font-bold">📋</span>
+            <div className="flex items-center gap-3">
+              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-yellow-400">
+                <span className="text-xl font-bold">📋</span>
               </div>
-              <span className="font-semibold text-gray-800">{t('Step.io')}</span>
+              <span className="font-bold text-xl text-gray-800">{t('Step.io')}</span>
             </div>
 
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-12">
               <button
-                className="flex h-10 w-10 items-center justify-center rounded-full bg-yellow-400 text-white cursor-pointer"
+                className="flex h-12 w-12 items-center justify-center rounded-full bg-yellow-400 text-white cursor-pointer"
                 onClick={() => openModal('add-task', t('Add New Task'))}
               >
-                +
+                <span className="text-2xl">+</span>
               </button>
               <div className="flex items-center gap-2">
                 <div className="text-right">
-                  <div className="font-semibold text-gray-800">{useAuth().user?.name || 'User'}</div>
+                  <div className="font-semibold text-gray-800">{useAuth().user?.name || 'Default User'}</div>
                   <div
-                    className="text-xs text-gray-500 cursor-pointer hover:text-yellow-500"
+                    className="text-sm text-gray-500 cursor-pointer hover:text-yellow-500 mt-1"
                     onClick={() => openModal('settings', t('Settings'))}
                   >
                     {t('My settings')}
                   </div>
                 </div>
                 <div
-                  className="h-10 w-10 overflow-hidden rounded-full bg-gray-300 cursor-pointer"
+                  className="h-10 w-10 overflow-hidden rounded-full bg-gray-300 cursor-pointer ms-3"
                   onClick={() => openBurgerMenu('profile')}
                 >
-                  <img src="/api/placeholder/40/40" alt="Profile" className="h-full w-full object-cover" />
+                  <div className="w-full h-full bg-gray-200 rounded-full flex items-center justify-center text-gray-500">
+                  <span className="text-lg">👤</span>
+                </div>
                 </div>
               </div>
             </div>
@@ -164,7 +166,6 @@ export default function Home() {
 
                   {/* Task Selection for Pinning */}
                   <div className="mt-6">
-                    <h4 className="font-medium text-gray-700 mb-2">{t('Select Task to Pin')}</h4>
                     <div className="space-y-2 max-h-60 overflow-y-auto">
                       {tasks
                         .filter(task => !pinnedTasks.some(pinned => pinned.id === task.id))
@@ -189,7 +190,7 @@ export default function Home() {
                           </div>
                         ))}
                       {tasks.filter(task => !pinnedTasks.some(pinned => pinned.id === task.id)).length === 0 && (
-                        <div className="text-center py-4 text-gray-500 text-sm">
+                        <div className="text-center py-8 text-gray-500 bg-gray-50 rounded-2xl">
                           {t('No tasks available to pin')}
                         </div>
                       )}
@@ -201,7 +202,7 @@ export default function Home() {
               {/* Calendar */}
               <div>
                 <div className="mb-4 flex flex-col sm:flex-row items-center justify-between gap-2">
-                  <h3 className="font-semibold text-gray-800 text-center sm:text-left">
+                  <h3 className="font-semibold text-yellow-500 text-center sm:text-left">
                     {currentDate.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
                   </h3>
                   <div className="flex items-center gap-2">
@@ -221,13 +222,13 @@ export default function Home() {
                 </div>
 
                 <div className="mt-4 grid grid-cols-7 gap-1 sm:gap-2 text-center">
-                  <div className="text-xs font-medium text-gray-400">Mon</div>
-                  <div className="text-xs font-medium text-gray-400">Tue</div>
-                  <div className="text-xs font-medium text-gray-400">Wed</div>
-                  <div className="text-xs font-medium text-gray-400">Thu</div>
-                  <div className="text-xs font-medium text-gray-400">Fri</div>
-                  <div className="text-xs font-medium text-gray-400">Sat</div>
-                  <div className="text-xs font-medium text-gray-400">Sun</div>
+                  <div className="text-sm font-medium text-gray-400">Mon</div>
+                  <div className="text-sm font-medium text-gray-400">Tue</div>
+                  <div className="text-sm font-medium text-gray-400">Wed</div>
+                  <div className="text-sm font-medium text-gray-400">Thu</div>
+                  <div className="text-sm font-medium text-gray-400">Fri</div>
+                  <div className="text-sm font-medium text-gray-400">Sat</div>
+                  <div className="text-sm font-medium text-gray-400">Sun</div>
 
                   <ClientCalendarGrid
                     currentDate={currentDate}
@@ -247,7 +248,7 @@ export default function Home() {
               <div className="mb-6">
                 <h2 className="text-3xl font-bold text-gray-800">{t('Today\'s schedule')}</h2>
                 <div className="flex items-center justify-between w-full">
-                  <h3 className="text-xl sm:text-2xl font-semibold text-yellow-400 truncate">
+                  <h3 className="text-xl sm:text-2xl font-semibold text-yellow-500 truncate mt-1">
                     {formatDate(currentDate)}
                   </h3>
                   <div className="flex gap-2 ml-2">
@@ -328,8 +329,8 @@ export default function Home() {
               {/* Music Player */}
               <div className="rounded-2xl bg-gray-50 p-4">
                 <div className="mb-4 flex items-center gap-3">
-                  <div className="h-12 w-12 overflow-hidden rounded-lg bg-red-900">
-                    <img src="/api/placeholder/48/48" alt="Album" className="h-full w-full object-cover" />
+                  <div className="h-12 w-12 overflow-hidden rounded-lg bg-red-900 flex items-center justify-center">
+                    <span className="text-white text-lg">🎵</span>
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="font-semibold text-gray-800 truncate">{t('Godzilla')}</div>
@@ -352,18 +353,16 @@ export default function Home() {
                 </div>
 
                 <div className="flex items-center justify-center gap-2 sm:gap-4">
-                  <button className="text-gray-600 cursor-pointer hover:text-gray-800">🔀</button>
                   <button className="text-gray-600 cursor-pointer hover:text-gray-800">⏮</button>
                   <button className="flex h-8 w-8 items-center justify-center rounded-full bg-yellow-400 text-white cursor-pointer hover:bg-yellow-600">▶</button>
                   <button className="text-gray-600 cursor-pointer hover:text-gray-800">⏭</button>
-                  <button className="text-gray-600 cursor-pointer hover:text-gray-800">🔁</button>
                 </div>
               </div>
 
               {/* Change Music Button */}
               <div className="flex justify-center">
                 <button
-                  className="px-4 py-2 bg-yellow-400 text-gray-800 rounded-full text-sm font-medium hover:bg-yellow-500 cursor-pointer w-full sm:w-auto"
+                  className="px-4 py-2 bg-yellow-400 text-white rounded-full text-sm font-medium hover:bg-yellow-500 cursor-pointer w-full sm:w-auto"
                   onClick={() => openModal('music-list', t('Change Music Modal Title'))}
                 >
                   {t('Change Music')}
@@ -373,7 +372,7 @@ export default function Home() {
               {/* Category Management */}
               <div className="rounded-2xl bg-gray-50 p-4 sm:p-6">
                 <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-4 gap-2">
-                  <h3 className="text-lg sm:text-xl font-bold text-gray-800">{t('Categories')}</h3>
+                  <h3 className="font-semibold text-gray-800">{t('Categories')}</h3>
                   <button
                     className="text-sm text-yellow-500 hover:underline cursor-pointer self-end"
                     onClick={() => openModal('add-category', t('Add New Category'))}
@@ -403,7 +402,7 @@ export default function Home() {
                       </div>
                     ))
                   ) : (
-                    <div className="text-sm text-gray-500 italic p-2">{t('No categories yet')}</div>
+                    <div className="text-center py-8 text-gray-500 bg-gray-50 rounded-2xl">{t('No categories')}</div>
                   )}
                 </div>
               </div>
@@ -492,7 +491,9 @@ export default function Home() {
           <div className="space-y-4">
             <div className="flex items-center gap-4 pb-4 border-b">
               <div className="h-16 w-16 overflow-hidden rounded-full bg-gray-300">
-                <img src="/api/placeholder/48/48" alt="Profile" className="h-full w-full object-cover" />
+                <div className="w-full h-full bg-gray-200 rounded-full flex items-center justify-center text-gray-500">
+                  <span className="text-2xl">👤</span>
+                </div>
               </div>
               <div className="flex-1">
                 <div className="font-semibold text-gray-800">{useAuth().user?.name || 'User'}</div>
@@ -538,12 +539,11 @@ export default function Home() {
                 {t('Help & Support')}
               </button>
               <div className="pt-4 border-t border-gray-200">
-                <div className="text-sm font-medium text-gray-700 mb-2">{t('Language')}</div>
                 <div className="flex space-x-2">
                   <button
-                    className={`flex-1 py-2 px-3 rounded-md text-sm ${
+                    className={`flex-1 py-2 px-3 rounded-md text-sm cursor-pointer ${
                       language === 'en'
-                        ? 'bg-yellow-400 text-white'
+                        ? 'bg-yellow-500 text-white'
                         : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
                     }`}
                     onClick={() => setLanguage('en')}
@@ -551,7 +551,7 @@ export default function Home() {
                     {t('English')}
                   </button>
                   <button
-                    className={`flex-1 py-2 px-3 rounded-md text-sm ${
+                    className={`flex-1 py-2 px-3 rounded-md text-sm cursor-pointer ${
                       language === 'id'
                         ? 'bg-yellow-400 text-white'
                         : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
@@ -563,13 +563,13 @@ export default function Home() {
                 </div>
               </div>
               <button
-                className="w-full text-left p-2 bg-red-500 hover:bg-red-600 rounded-lg text-white cursor-pointer flex items-center justify-center gap-2"
+                className="w-full text-left p-2 bg-red-800 hover:bg-red-600 rounded-lg text-white cursor-pointer flex items-center justify-center gap-2 mt-3"
                 onClick={() => {
                   logout();
                   closeBurgerMenu();
                 }}
               >
-                <span>🚪</span> {t('Logout')}
+                {t('Logout')}
               </button>
             </nav>
           </div>

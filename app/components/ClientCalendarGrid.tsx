@@ -47,10 +47,10 @@ export default function ClientCalendarGrid({ currentDate, tasks, onDateClick, on
             onClick={() => onDateClick(date)}
             onDoubleClick={() => onDateDoubleClick && onDateDoubleClick(date)}
           >
-            <div className={`flex h-8 w-8 items-center justify-center rounded-full text-sm font-semibold ${
+            <div className={`flex h-8 w-8 items-center justify-center rounded-full text-sm ${
               isToday && !isSelected ? 'text-white bg-yellow-400' : 
               isSelected ? 'text-white bg-gray-500' : 
-              hasTasks ? 'text-yellow-500' : 'text-gray-700'
+              hasTasks ? 'text-yellow-500' : 'text-black'
             }`}>
               {date.getDate()}
             </div>

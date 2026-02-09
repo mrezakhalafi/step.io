@@ -42,7 +42,7 @@ export default function BurgerMenu({ isOpen, onClose, children }: BurgerMenuProp
     <div className="fixed inset-0 z-50 flex">
       {/* Backdrop */}
       <div 
-        className="fixed inset-0 bg-black bg-opacity-20"
+        className="fixed inset-0 bg-black/60"
         onClick={onClose}
       ></div>
       

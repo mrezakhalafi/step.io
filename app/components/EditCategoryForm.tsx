@@ -79,7 +79,7 @@ export default function EditCategoryForm({ categoryId, onClose }: EditCategoryFo
             <div 
               key={color.value}
               className={`flex items-center p-2 rounded-md cursor-pointer border text-gray-900 ${
-                formData.color === color.value ? 'border-gray-800 ring-2 ring-offset-2 ring-gray-400' : 'border-gray-300'
+                formData.color === color.value ? 'border-gray-800 ring-gray-400' : 'border-gray-300'
               }`}
               onClick={() => setFormData({...formData, color: color.value})}
             >
