@@ -112,6 +112,15 @@ export default function Home() {
           <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
             {/* Left Sidebar */}
             <div className="space-y-6">
+              {/* Time & Weather - Shown on mobile above Weekly Pinned */}
+              <div className="text-center md:hidden">
+                <ClientTimeDisplay />
+                <div className="flex items-center justify-center gap-2 text-sm text-gray-500">
+                  <span>☀️</span>
+                  <span>{t('Now is almost Sunny')}</span>
+                </div>
+              </div>
+
               {/* Weekly Pinned */}
               <div>
                 <div className="mb-4 flex items-center justify-between">
@@ -208,7 +217,7 @@ export default function Home() {
               {/* Calendar */}
               <div>
                 <div className="mb-4 flex flex-col sm:flex-row items-center justify-between gap-2">
-                  <h3 className="font-semibold text-yellow-500 text-center sm:text-left">
+                  <h3 className="font-semibold text-yellow-500 text-center sm:text-left text-lg">
                     {currentDate.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
                   </h3>
                   <div className="flex items-center gap-2">
@@ -323,8 +332,8 @@ export default function Home() {
 
             {/* Right Sidebar */}
             <div className="space-y-6">
-              {/* Time & Weather */}
-              <div className="text-center">
+              {/* Time & Weather - Shown on desktop in right sidebar */}
+              <div className="text-center hidden md:block">
                 <ClientTimeDisplay />
                 <div className="flex items-center justify-center gap-2 text-sm text-gray-500">
                   <span>☀️</span>
@@ -339,30 +348,13 @@ export default function Home() {
                     <span className="text-white text-lg">🎵</span>
                   </div>
                   <div className="flex-1 min-w-0">
-                    <div className="font-semibold text-gray-800 truncate">{t('Godzilla')}</div>
-                    <div className="text-sm text-gray-500 truncate">{t('Eminem')}</div>
+                    <div className="font-semibold text-gray-800 truncate">{t('The Reasons')}</div>
+                    <div className="text-sm text-gray-500 truncate">{t('Hoobastank')}</div>
                   </div>
-                  <button
-                    className="text-gray-400 cursor-pointer hover:text-gray-600"
-                    onClick={() => openModal('settings', t('Music Player Settings'))}
-                  >
-                    ⋮
-                  </button>
                 </div>
 
-                <div className="mb-2 flex items-center gap-2 text-xs text-gray-500">
-                  <span>03:15</span>
-                  <div className="h-1 flex-1 rounded-full bg-gray-200">
-                    <div className="h-full w-1/2 rounded-full bg-gray-400"></div>
-                  </div>
-                  <span>00:45</span>
-                </div>
+                <audio controls className="w-full" src="/Hoobastank_The_Reasons.mp3" />
 
-                <div className="flex items-center justify-center gap-2 sm:gap-4">
-                  <button className="text-gray-600 cursor-pointer hover:text-gray-800">⏮</button>
-                  <button className="flex h-8 w-8 items-center justify-center rounded-full bg-yellow-400 text-white cursor-pointer hover:bg-yellow-600">▶</button>
-                  <button className="text-gray-600 cursor-pointer hover:text-gray-800">⏭</button>
-                </div>
               </div>
 
               {/* Change Music Button - Hidden on mobile */}
@@ -569,7 +561,7 @@ export default function Home() {
                 </div>
               </div>
               <button
-                className="w-full text-left p-2 bg-red-800 hover:bg-red-600 rounded-lg text-white cursor-pointer flex items-center justify-center gap-2 mt-3"
+                className="w-full text-left p-2 border border-red-800 rounded-lg text-red-800 hover:bg-red-50 cursor-pointer flex items-center justify-center gap-2 mt-3 text-sm"
                 onClick={() => {
                   logout();
                   closeBurgerMenu();
@@ -581,6 +573,11 @@ export default function Home() {
           </div>
         </BurgerMenu>
 
+      </div>
+      
+      {/* Footer - Version info only on desktop */}
+      <div className="hidden md:block text-center text-xs text-gray-500 py-4 bg-gray-100">
+        Version 1.0 (090226)
       </div>
     </ProtectedRoute>
   );

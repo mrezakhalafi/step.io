@@ -8,12 +8,7 @@ interface MusicListModalProps {
 
 // Sample music data
 const sampleMusic = [
-  { id: '1', title: 'Godzilla', artist: 'Eminem', album: 'Kamikaze', duration: '4:06' },
-  { id: '2', title: 'Blinding Lights', artist: 'The Weeknd', album: 'After Hours', duration: '3:20' },
-  { id: '3', title: 'Watermelon Sugar', artist: 'Harry Styles', album: 'Fine Line', duration: '2:54' },
-  { id: '4', title: 'Levitating', artist: 'Dua Lipa', album: 'Future Nostalgia', duration: '3:23' },
-  { id: '5', title: 'Good Days', artist: 'SZA', album: 'Good Days', duration: '4:38' },
-  { id: '6', title: 'Save Your Tears', artist: 'The Weeknd', album: 'After Hours', duration: '3:35' },
+  { id: '1', title: 'The Reasons', artist: 'Hoobastank', album: 'The Reasons', duration: '3:52' }
 ];
 
 export default function MusicListModal({ onClose }: MusicListModalProps) {
