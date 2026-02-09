@@ -76,7 +76,7 @@ export default function Home() {
       <div className="min-h-screen bg-gray-100 p-4 sm:p-8 lg:p-12 xl:p-16">
         <div className="mx-auto max-w-7xl rounded-3xl bg-white p-4 sm:p-8 lg:p-10 xl:p-12 shadow-sm">
           {/* Header */}
-          <div className="mb-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div className="mb-8 flex flex-row items-center justify-between gap-4">
             <div className="flex items-center gap-3">
               <div className="flex h-12 w-12 items-center justify-center rounded-full bg-yellow-400">
                 <span className="text-xl font-bold">📋</span>
@@ -86,19 +86,15 @@ export default function Home() {
 
             <div className="flex items-center gap-12">
               <button
-                className="flex h-12 w-12 items-center justify-center rounded-full bg-yellow-400 text-white cursor-pointer"
+                className="flex h-12 w-12 items-center justify-center rounded-full bg-yellow-400 text-white cursor-pointer hidden md:flex"
                 onClick={() => openModal('add-task', t('Add New Task'))}
               >
                 <span className="text-2xl">+</span>
               </button>
               <div className="flex items-center gap-2">
                 <div className="text-right">
-                  <div className="font-semibold text-gray-800">{useAuth().user?.name || 'Default User'}</div>
-                  <div
-                    className="text-sm text-gray-500 cursor-pointer hover:text-yellow-500 mt-1"
-                    onClick={() => openModal('settings', t('Settings'))}
-                  >
-                    {t('My settings')}
+                  <div className="flex items-center gap-2">
+                    <div className="font-semibold text-gray-800">{useAuth().user?.name || 'Default User'}</div>
                   </div>
                 </div>
                 <div
@@ -196,6 +192,16 @@ export default function Home() {
                       )}
                     </div>
                   </div>
+                  
+                  {/* Mobile Add Task Button - Hidden on desktop */}
+                  <div className="mt-6 md:hidden">
+                    <button
+                      className="w-full py-3 bg-yellow-400 text-white rounded-xl text-base font-medium hover:bg-yellow-500 cursor-pointer"
+                      onClick={() => openModal('add-task', t('Add New Task'))}
+                    >
+                      {t('Add Task')}
+                    </button>
+                  </div>
                 </div>
               </div>
 
@@ -246,7 +252,7 @@ export default function Home() {
             {/* Center - Today's Schedule */}
             <div>
               <div className="mb-6">
-                <h2 className="text-3xl font-bold text-gray-800">{t('Today\'s schedule')}</h2>
+                <h2 className="text-xl sm:text-3xl font-bold text-gray-800">{t('Today\'s schedule')}</h2>
                 <div className="flex items-center justify-between w-full">
                   <h3 className="text-xl sm:text-2xl font-semibold text-yellow-500 truncate mt-1">
                     {formatDate(currentDate)}
@@ -326,8 +332,8 @@ export default function Home() {
                 </div>
               </div>
 
-              {/* Music Player */}
-              <div className="rounded-2xl bg-gray-50 p-4">
+              {/* Music Player - Hidden on mobile */}
+              <div className="rounded-2xl bg-gray-50 p-4 hidden md:block">
                 <div className="mb-4 flex items-center gap-3">
                   <div className="h-12 w-12 overflow-hidden rounded-lg bg-red-900 flex items-center justify-center">
                     <span className="text-white text-lg">🎵</span>
@@ -359,10 +365,10 @@ export default function Home() {
                 </div>
               </div>
 
-              {/* Change Music Button */}
-              <div className="flex justify-center">
+              {/* Change Music Button - Hidden on mobile */}
+              <div className="hidden md:flex justify-center w-full">
                 <button
-                  className="px-4 py-2 bg-yellow-400 text-white rounded-full text-sm font-medium hover:bg-yellow-500 cursor-pointer w-full sm:w-auto"
+                  className="px-4 py-2 bg-yellow-400 text-white rounded-full text-sm font-medium hover:bg-yellow-500 cursor-pointer"
                   onClick={() => openModal('music-list', t('Change Music Modal Title'))}
                 >
                   {t('Change Music')}
@@ -574,6 +580,7 @@ export default function Home() {
             </nav>
           </div>
         </BurgerMenu>
+
       </div>
     </ProtectedRoute>
   );

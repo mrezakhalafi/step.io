@@ -47,8 +47,8 @@ export default function BurgerMenu({ isOpen, onClose, children }: BurgerMenuProp
       ></div>
       
       {/* Slide-in menu */}
-      <div 
-        className={`relative ml-auto h-full w-75 bg-white shadow-xl transform transition-transform duration-300 ease-in-out ${
+      <div
+        className={`relative ml-auto h-full w-full sm:w-75 bg-white shadow-xl transform transition-transform duration-300 ease-in-out ${
           isOpen ? 'translate-x-0' : 'translate-x-full'
         }`}
       >
